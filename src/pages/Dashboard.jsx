@@ -39,6 +39,34 @@ export default function Dashboard() {
                     { id: 8, title: 'Arduino Workshop', club: 'Robotics Club', content: 'Basics of electronics and sensors.', createdAt: new Date(Date.now() - 86400000) },
                     { id: 9, title: 'Tech Exhibition', club: 'Robotics Club', content: 'Showcase your projects to external visitors.', createdAt: new Date(Date.now() - 172800000) },
 
+                    { id: 13, title: 'Debate Championship', club: 'Debate Club', content: 'Inter-college debate competition.', createdAt: new Date() },
+                    { id: 14, title: 'Public Speaking Workshop', club: 'Debate Club', content: 'Master the art of speech.', createdAt: new Date(Date.now() - 86400000) },
+                    { id: 15, title: 'Mock Parliament', club: 'Debate Club', content: 'Experience the legislative process.', createdAt: new Date(Date.now() - 172800000) },
+
+                    { id: 16, title: 'Photo Walk', club: 'Photography Club', content: 'Campus photo walk this Sunday morning.', createdAt: new Date() },
+                    { id: 17, title: 'Exhibition Setup', club: 'Photography Club', content: 'Volunteers needed for gallery setup.', createdAt: new Date(Date.now() - 86400000) },
+                    { id: 18, title: 'Editing Workshop', club: 'Photography Club', content: 'Learn Lightroom basics.', createdAt: new Date(Date.now() - 172800000) },
+
+                    { id: 19, title: 'Dance Off', club: 'Dance Crew', content: 'Auditions for the annual fest.', createdAt: new Date() },
+                    { id: 20, title: 'Workshop: Hip Hop', club: 'Dance Crew', content: 'Guest choreographer workshop.', createdAt: new Date(Date.now() - 86400000) },
+                    { id: 21, title: 'Flash Mob', club: 'Dance Crew', content: 'Practice starts at 5 PM.', createdAt: new Date(Date.now() - 172800000) },
+
+                    { id: 22, title: 'Book Club Meet', club: 'Literature Club', content: 'Discussing "1984" by Orwell.', createdAt: new Date() },
+                    { id: 23, title: 'Poetry Slam', club: 'Literature Club', content: 'Open mic for poets.', createdAt: new Date(Date.now() - 86400000) },
+                    { id: 24, title: 'Creative Writing', club: 'Literature Club', content: 'Workshop on short story writing.', createdAt: new Date(Date.now() - 172800000) },
+
+                    { id: 25, title: 'Startup Pitch', club: 'E-Cell', content: 'Pitch your idea to investors.', createdAt: new Date() },
+                    { id: 26, title: 'Guest Lecture', club: 'E-Cell', content: 'Talk by a successful alumni entrepreneur.', createdAt: new Date(Date.now() - 86400000) },
+                    { id: 27, title: 'Internship Fair', club: 'E-Cell', content: 'Find internships in local startups.', createdAt: new Date(Date.now() - 172800000) },
+
+                    { id: 28, title: 'Art Exhibition', club: 'Fine Arts', content: 'Showcasing student artwork.', createdAt: new Date() },
+                    { id: 29, title: 'Sketching Competition', club: 'Fine Arts', content: 'Theme: Campus Life.', createdAt: new Date(Date.now() - 86400000) },
+                    { id: 30, title: 'Mural Painting', club: 'Fine Arts', content: 'Help us paint the canteen wall.', createdAt: new Date(Date.now() - 172800000) },
+
+                    { id: 31, title: 'Inter-Hostel Cricket', club: 'Sports Committee', content: 'Registration extended till Friday.', createdAt: new Date() },
+                    { id: 32, title: 'Football Trials', club: 'Sports Committee', content: 'College team selection trials.', createdAt: new Date(Date.now() - 86400000) },
+                    { id: 33, title: 'Yoga Session', club: 'Sports Committee', content: 'Morning yoga for mental health.', createdAt: new Date(Date.now() - 172800000) },
+
                     { id: 10, title: 'Placement Drive: Google', club: 'Placement Cell', content: 'Eligibility: 4th Year CSE. Package: 20 LPA.', createdAt: new Date() },
                     { id: 11, title: 'Internship Opportunity: Amazon', club: 'Placement Cell', content: 'For 3rd Year students. apply by tomorrow.', createdAt: new Date(Date.now() - 86400000) },
                     { id: 12, title: 'Resume Building Session', club: 'Placement Cell', content: 'Expert session on creating ATS friendly resumes.', createdAt: new Date(Date.now() - 172800000) },

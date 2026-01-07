@@ -15,7 +15,12 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   // In a real app we would check auth state, but for the MVP skeleton logic:
-  const { currentUser } = useAuth();
+  const { currentUser, loading } = useAuth();
+
+  if (loading) {
+    return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>Loading...</div>;
+  }
+
   // Note: currentUser might be null initially while loading. AuthContext handles loading state.
   // However, since we wrapped everything in AuthProvider which handles !loading, strictly checking currentUser here is safe *after* loading.
   if (!currentUser) return <Navigate to="/login" />;

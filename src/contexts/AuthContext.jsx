@@ -6,9 +6,11 @@ import {
     signOut,
     onAuthStateChanged,
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    setPersistence,
+    browserLocalPersistence
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, onSnapshot, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -76,35 +78,59 @@ export function AuthProvider({ children }) {
     }
 
     function logout() {
+        localStorage.removeItem('demoRole'); // Clear demo session
         return signOut(auth);
     }
 
     useEffect(() => {
+        // Ensure standard persistence
+        setPersistence(auth, browserLocalPersistence).catch(console.error);
+
         let unsubscribeDoc = null;
 
         const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
             if (user) {
+                // Real User Found
+                setCurrentUser(user); // Set basic user immediately to prevent redirect
+                localStorage.removeItem('demoRole'); // Cleanup demo if real user exists
                 // Realtime listener for user profile
                 unsubscribeDoc = onSnapshot(doc(db, "users", user.uid), (docSnap) => {
                     if (docSnap.exists()) {
                         const userData = docSnap.data();
                         setUserRole(userData.role);
-                        setCurrentUser({ ...user, ...userData });
+                        setCurrentUser({ ...user, ...userData }); // Enhance with profile data
+                        // Sync subscribed clubs from firestore
+                        if (userData.subscribedClubs) {
+                            setSubscribedClubs(userData.subscribedClubs);
+                        } else {
+                            setSubscribedClubs([]);
+                        }
                     } else {
-                        // Fallback if doc doesn't exist yet
                         setCurrentUser(user);
                         setUserRole(null);
+                        setSubscribedClubs([]);
                     }
                 }, (error) => {
                     console.error("Error fetching user data:", error);
                     setCurrentUser(user);
                 });
+                setLoading(false);
             } else {
-                if (unsubscribeDoc) unsubscribeDoc();
-                setCurrentUser(null);
-                setUserRole(null);
+                // No Real User - Check for Demo Session
+                const demoRole = localStorage.getItem('demoRole');
+                if (demoRole) {
+                    // Restore Demo User
+                    setCurrentUser({ uid: `demo-${demoRole}`, email: `${demoRole}@cunp.com`, displayName: `Demo ${demoRole}`, year: 4, branch: 'CSE', rollNumber: '2022CS001' });
+                    setUserRole(demoRole);
+                    setSubscribedClubs([]);
+                } else {
+                    if (unsubscribeDoc) unsubscribeDoc();
+                    setCurrentUser(null);
+                    setUserRole(null);
+                    setSubscribedClubs([]);
+                }
+                setLoading(false);
             }
-            setLoading(false);
         });
 
         return () => {
@@ -115,20 +141,52 @@ export function AuthProvider({ children }) {
 
     const [subscribedClubs, setSubscribedClubs] = useState([]);
 
-    const subscribeToClub = (club) => {
-        setSubscribedClubs(prev => {
-            if (prev.find(c => c.id === club.id)) return prev;
-            return [...prev, club];
-        });
+    const subscribeToClub = async (club) => {
+        // Optimistic update
+        const newClub = { id: club.id, name: club.name || '', category: club.category || 'General' };
+
+        if (currentUser && !currentUser.uid.startsWith('demo-')) {
+            try {
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    subscribedClubs: arrayUnion(newClub)
+                });
+            } catch (e) {
+                console.error("Error subscribing:", e);
+                alert("Could not save subscription.");
+            }
+        } else {
+            // Demo/Local fallback
+            setSubscribedClubs(prev => {
+                if (prev.find(c => c.id === club.id)) return prev;
+                return [...prev, newClub];
+            });
+        }
     };
 
-    const unsubscribeFromClub = (clubId) => {
-        setSubscribedClubs(prev => prev.filter(c => c.id !== clubId));
+    const unsubscribeFromClub = async (clubId) => {
+        const clubToRemove = subscribedClubs.find(c => c.id === clubId);
+
+        if (currentUser && !currentUser.uid.startsWith('demo-')) {
+            if (!clubToRemove) return;
+            try {
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    subscribedClubs: arrayRemove(clubToRemove)
+                });
+            } catch (e) {
+                console.error("Error unsubscribing:", e);
+            }
+        } else {
+            setSubscribedClubs(prev => prev.filter(c => c.id !== clubId));
+        }
     };
 
     const loginAsDemo = (role) => {
+        localStorage.setItem('demoRole', role); // Save demo session
         setCurrentUser({ uid: `demo-${role}`, email: `${role}@cunp.com`, displayName: `Demo ${role}`, year: 4, branch: 'CSE', rollNumber: '2022CS001' });
         setUserRole(role);
+        setSubscribedClubs([]); // Reset for demo
     };
 
     const value = {
@@ -141,7 +199,8 @@ export function AuthProvider({ children }) {
         logout,
         subscribeToClub,
         unsubscribeFromClub,
-        loginAsDemo
+        loginAsDemo,
+        loading
     };
 
     return (
