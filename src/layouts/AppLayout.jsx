@@ -1,3 +1,4 @@
+import BotWidget from "../components/BotWidget";
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -68,6 +69,7 @@ export default function AppLayout() {
             <main style={{ flex: 1, padding: '16px', overflowY: 'auto' }}>
                 <Outlet />
             </main>
+            <BotWidget />
         </div>
     );
 }
