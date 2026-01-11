@@ -29,3 +29,9 @@ config/firebase.js
 ServiceAccountKey.json
 *.key
 
+# Firebase / Secrets
+src/firebase.js
+.firebase/
+.firebaserc
+firebase.json
+.env
